@@ -1,0 +1,76 @@
+import os
+
+# Função para imprimir o labirinto
+def imprimir_labirinto(labirinto):
+    for linha in labirinto:
+        print(" ".join(linha))
+    print()
+
+# Função para mover o jogador
+def mover_jogador(labirinto, direcao):
+    # Encontrar a posição atual do jogador
+    for i in range(len(labirinto)):
+        for j in range(len(labirinto[i])):
+            if labirinto[i][j] == 'P':
+                pos_i, pos_j = i, j
+                break
+
+    # Calcular a nova posição
+    if direcao == 'w':  # Cima
+        novo_i, novo_j = pos_i - 1, pos_j
+    elif direcao == 's':  # Baixo
+        novo_i, novo_j = pos_i + 1, pos_j
+    elif direcao == 'a':  # Esquerda
+        novo_i, novo_j = pos_i, pos_j - 1
+    elif direcao == 'd':  # Direita
+        novo_i, novo_j = pos_i, pos_j + 1
+    else:
+        print("Movimento inválido! Use w, a, s, d.")
+        return labirinto, False
+
+    # Verificar se a nova posição é válida
+    if 0 <= novo_i < len(labirinto) and 0 <= novo_j < len(labirinto[0]):
+        if labirinto[novo_i][novo_j] == '#':
+            print("Você bateu em uma parede!")
+            return labirinto, False
+        elif labirinto[novo_i][novo_j] == 'O':
+            print("Parabéns! Você venceu!")
+            return labirinto, True
+        else:
+            # Movimentar o jogador
+            labirinto[pos_i][pos_j] = '.'
+            labirinto[novo_i][novo_j] = 'P'
+            return labirinto, False
+    else:
+        print("Movimento inválido! Você saiu do labirinto.")
+        return labirinto, False
+
+# Função principal do jogo
+def main():
+    # Definir o labirinto
+    labirinto = [
+        ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#'],
+        ['#', 'P', '.', '.', '.', '#', '.', '.', '.', '#'],
+        ['#', '#', '#', '#', '.', '#', '.', '#', '.', '#'],
+        ['#', '.', '.', '.', '.', '.', '.', '#', '.', '#'],
+        ['#', '.', '#', '#', '#', '#', '#', '#', '.', '#'],
+        ['#', '.', '.', '.', '.', '.', '.', '.', '.', '#'],
+        ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#']
+    ]
+
+    # Posição do objetivo
+    labirinto[5][8] = 'O'
+
+    # Loop principal do jogo
+    venceu = False
+    while not venceu:
+        os.system('cls' if os.name == 'nt' else 'clear')  # Limpar a tela
+        imprimir_labirinto(labirinto)
+        direcao = input("Use w (cima), s (baixo), a (esquerda), d (direita) para mover: ")
+        labirinto, venceu = mover_jogador(labirinto, direcao)
+
+    print("Fim do jogo!")
+
+# Executar o jogo
+if __name__ == "__main__":
+    main()
